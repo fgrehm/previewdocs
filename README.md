@@ -1,4 +1,4 @@
 # viewdocs-preview
 
-Preview changes to [Viewdocs](http://viewdocs.io/) before pushing changes back
-to your repository.
+Preview [Viewdocs](http://viewdocs.io/) documentation before pushing changes
+back to your repositories.
