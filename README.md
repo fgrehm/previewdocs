@@ -17,7 +17,8 @@ go build
 ```
 
 Then drop the generated `viewdocs-preview` executable on a directory available
-on your `$PATH`.
+on your `$PATH` and make sure [your GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use)
+is available from the `ACCESS_TOKEN` environmetal variable at all times.
 
 ### TODO
 
