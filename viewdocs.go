@@ -28,10 +28,10 @@ func (cv *CacheValue) Size() int {
 func parseRequest(r *http.Request) (doc string, err error) {
 	path := strings.Split(r.RequestURI, "/")
 
-	if len(path) < 3 || (len(path) == 3 && strings.HasSuffix(r.RequestURI, "/")) {
+	if len(path) == 1 || (len(path) == 2 && strings.HasSuffix(r.RequestURI, "/")) {
 		doc = "index"
 	} else {
-		doc = strings.Join(path[2:], "/")
+		doc = strings.Join(path[1:], "/")
 		if strings.HasSuffix(doc, "/") {
 			doc = doc[:len(doc)-1]
 		}
