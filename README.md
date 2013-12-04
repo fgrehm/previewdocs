@@ -18,3 +18,8 @@ go build
 
 Then drop the generated `viewdocs-preview` executable on a directory available
 on your `$PATH`.
+
+### TODO
+
+* Add support for configuring user / project names to fill in `{{USER}}` and `{{NAME}}` on templates
+* Fix relative linking
