@@ -15,10 +15,10 @@ var DefaultTemplate string
 func parseRequest(r *http.Request) (doc string, err error) {
 	path := strings.Split(r.RequestURI, "/")
 
-	if len(path) == 1 || (len(path) == 2 && strings.HasSuffix(r.RequestURI, "/")) {
+	if len(path) < 3 || (len(path) == 3 && strings.HasSuffix(r.RequestURI, "/")) {
 		doc = "index"
 	} else {
-		doc = strings.Join(path[1:], "/")
+		doc = strings.Join(path[2:], "/")
 		if strings.HasSuffix(doc, "/") {
 			doc = doc[:len(doc)-1]
 		}
@@ -42,13 +42,6 @@ func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 	}
 
 	bodyStr := string(buf)
-
-	// Ajust relative links for relative paths so that '/project-name/page'
-	// becomes '/page'
-	// FIXME: This doesn't handle relative links on the template / layout,
-	//        just on the markdown page itself
-	reg := regexp.MustCompile(`(\[[^\]]+\]\()/` + repo + `([^)])`)
-	bodyStr = reg.ReplaceAllString(bodyStr, "$1$2")
 
 	url := "https://api.github.com/markdown/raw"
 	if os.Getenv("ACCESS_TOKEN") != "" {
@@ -117,6 +110,10 @@ func main() {
 	user, repo := grabUserAndRepo()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		if r.RequestURI == "/" {
+			http.Redirect(w, r, "/" + repo, 301)
+			return
+		}
 		if r.RequestURI == "/favicon.ico" {
 			return
 		}
