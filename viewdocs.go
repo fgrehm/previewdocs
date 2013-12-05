@@ -42,6 +42,14 @@ func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 	}
 
 	bodyStr := string(buf)
+
+	// Ajust relative links for relative paths so that '/project-name/page'
+	// becomes '/page'
+	// FIXME: This doesn't handle relative links on the template / layout,
+	//        just on the markdown page itself
+	reg := regexp.MustCompile(`(\[[^\]]+\]\()/` + repo + `([^)])`)
+	bodyStr = reg.ReplaceAllString(bodyStr, "$1$2")
+
 	url := "https://api.github.com/markdown/raw"
 	if os.Getenv("ACCESS_TOKEN") != "" {
 		url += "?access_token=" + os.Getenv("ACCESS_TOKEN")
