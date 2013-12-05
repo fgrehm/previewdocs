@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"os/exec"
+	"regexp"
 	"strings"
 )
 
@@ -24,7 +26,7 @@ func parseRequest(r *http.Request) (doc string, err error) {
 	return
 }
 
-func fetchAndRenderDoc(doc string) (string, error) {
+func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 	template := make(chan string)
 	go func() {
 		buf, err := ioutil.ReadFile("docs/template.html")
@@ -53,9 +55,33 @@ func fetchAndRenderDoc(doc string) (string, error) {
 		return "", err
 	}
 	output := strings.Replace(<-template, "{{CONTENT}}", string(body), 1)
-	// output = strings.Replace(output, "{{NAME}}", repo, -1)
-	// output = strings.Replace(output, "{{USER}}", user, -1)
+	if user != "" {
+		output = strings.Replace(output, "{{NAME}}", repo, -1)
+	}
+	if repo != "" {
+		output = strings.Replace(output, "{{USER}}", user, -1)
+	}
 	return output, nil
+}
+
+func grabUserAndRepo() (user, repo string) {
+	cmd := exec.Command("git", "config", "--get", "remote.origin.url")
+	if out, err := cmd.CombinedOutput(); err != nil {
+		log.Printf("Error fetching github user and repository\nERROR: %s", err)
+	} else {
+		output := strings.Trim(string(out), "\n")
+		reg := regexp.MustCompile(`([^:/]+)/([\w.-]+)\.git$`)
+		matches := reg.FindStringSubmatch(output)
+
+		if len(matches) > 0 {
+			user = matches[1]
+			repo = matches[2]
+		} else {
+			log.Fatalf("Unable to parse your GitHub user and repository from '%s'. Please open an issue on https://github.com/fgrehm/viewdocs-preview", output)
+		}
+	}
+
+	return
 }
 
 func main() {
@@ -80,6 +106,8 @@ func main() {
 	}
 	DefaultTemplate = string(body)
 
+	user, repo := grabUserAndRepo()
+
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.RequestURI == "/favicon.ico" {
 			return
@@ -93,7 +121,7 @@ func main() {
 				return
 			}
 			log.Printf("Building docs for '%s'", doc)
-			output, err := fetchAndRenderDoc(doc)
+			output, err := fetchAndRenderDoc(user, repo, doc)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))

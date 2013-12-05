@@ -25,5 +25,4 @@ environmetal variable to your [GitHub access token](https://help.github.com/arti
 
 ### TODO
 
-* Add support for configuring user / project names to fill in `{{USER}}` and `{{NAME}}` on templates
 * Fix relative linking
