@@ -12,8 +12,9 @@ import (
 
 var DefaultTemplate string
 
-func parseRequest(r *http.Request) (doc string, err error) {
+func parseRequest(r *http.Request) (repo, doc string) {
 	path := strings.Split(r.RequestURI, "/")
+	repo = path[1]
 
 	if len(path) < 3 || (len(path) == 3 && strings.HasSuffix(r.RequestURI, "/")) {
 		doc = "index"
@@ -107,11 +108,11 @@ func main() {
 	}
 	DefaultTemplate = string(body)
 
-	user, repo := grabUserAndRepo()
+	user, gitHubRepo := grabUserAndRepo()
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.RequestURI == "/" {
-			http.Redirect(w, r, "/" + repo, 301)
+			http.Redirect(w, r, "/" + gitHubRepo, 301)
 			return
 		}
 		if r.RequestURI == "/favicon.ico" {
@@ -119,14 +120,14 @@ func main() {
 		}
 		switch r.Method {
 		case "GET":
-			doc, err := parseRequest(r)
-			if err != nil {
-				w.WriteHeader(http.StatusInternalServerError)
-				w.Write([]byte(err.Error()))
+			requestedRepo, doc := parseRequest(r)
+			if requestedRepo != gitHubRepo {
+				w.WriteHeader(http.StatusNotFound)
+				w.Write([]byte("Invalid repository '" + requestedRepo +  "'"))
 				return
 			}
 			log.Printf("Building docs for '%s'", doc)
-			output, err := fetchAndRenderDoc(user, repo, doc)
+			output, err := fetchAndRenderDoc(user, gitHubRepo, doc)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))
