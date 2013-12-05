@@ -40,7 +40,11 @@ func fetchAndRenderDoc(doc string) (string, error) {
 	}
 
 	bodyStr := string(buf)
-	resp, err := http.Post("https://api.github.com/markdown/raw?access_token="+os.Getenv("ACCESS_TOKEN"), "text/x-markdown", strings.NewReader(bodyStr))
+	url := "https://api.github.com/markdown/raw"
+	if os.Getenv("ACCESS_TOKEN") != "" {
+		url += "?access_token="+os.Getenv("ACCESS_TOKEN")
+	}
+	resp, err := http.Post(url, "text/x-markdown", strings.NewReader(bodyStr))
 	if err != nil {
 		return "", err
 	}
@@ -56,8 +60,8 @@ func fetchAndRenderDoc(doc string) (string, error) {
 
 func main() {
 	if os.Getenv("ACCESS_TOKEN") == "" {
-		// TODO: Add direct link to Development section of the README
-		log.Fatal("ACCESS_TOKEN was not found!")
+		log.Println("WARNING: ACCESS_TOKEN was not found, you'll be subject to GitHub's Rate Limiting. " +
+	                "Please read http://developer.github.com/v3/#rate-limiting for more information")
 	}
 
 	port := os.Getenv("PORT")
