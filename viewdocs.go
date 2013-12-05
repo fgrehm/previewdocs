@@ -60,7 +60,7 @@ func fetchAndRenderDoc(doc string) (string, error) {
 
 func main() {
 	if os.Getenv("ACCESS_TOKEN") == "" {
-		log.Println("WARNING: ACCESS_TOKEN was not found, you'll be subject to GitHub's Rate Limiting. " +
+		log.Println("WARNING: ACCESS_TOKEN was not found, you'll be subject to GitHub's Rate Limiting of 60 requests per hour. " +
 	                "Please read http://developer.github.com/v3/#rate-limiting for more information")
 	}
 
