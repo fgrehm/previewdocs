@@ -4,8 +4,8 @@
 meets [Gist.io](http://gist.io/) for simple project documentation. It renders
 Markdown from your repository's `docs` directory as simple static pages.
 
-`viewdocs-preview` is a CLI tool that helps you preview changes to your
-documentation before pushing the code back to your repository.
+`viewdocs-preview` is a *work in progress* CLI tool that helps you preview
+changes to your documentation before pushing the code back to your repository.
 
 ### Installation
 
