@@ -78,7 +78,7 @@ func grabUserAndRepo() (user, repo string) {
 			user = matches[1]
 			repo = matches[2]
 		} else {
-			log.Fatalf("Unable to parse your GitHub user and repository from '%s'. Please open an issue on https://github.com/fgrehm/viewdocs-preview", output)
+			log.Fatalf("Unable to parse your GitHub user and repository from '%s'. Please open an issue on https://github.com/fgrehm/previewdocs", output)
 		}
 	}
 
