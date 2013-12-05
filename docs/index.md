@@ -1,27 +1,63 @@
-# Welcome to Viewdocs
+# Welcome to viewdocs-preview
 
-Viewdocs is [Read the Docs](https://readthedocs.org/) meets [Gist.io](http://gist.io/) for simple project documentation. It renders Markdown from your repository's `docs` directory as simple static pages.
+[Viewdocs](http://viewdocs.io/) is [Read the Docs](https://readthedocs.org/)
+meets [Gist.io](http://gist.io/) for simple project documentation. It renders
+Markdown from your repository's `docs` directory as simple static pages.
+
+`viewdocs-preview` is a CLI tool that helps you preview changes to your
+documentation before pushing the code back to your repository.
+
+### Installation
+
+Right now it is only possible to install the `viewdocs-preview` command from
+sources. I'll provide precompiled releases of it as soon as things are stable.
+
+Assuming you have your [`$GOPATH`](http://golang.org/doc/code.html#GOPATH)
+configured properly, run:
+
+```
+go get github.com/fgrehm/viewdocs-preview
+cd $GOPATH/src/github.com/fgrehm/viewdocs-preview
+go build
+```
+
+Then drop the generated `viewdocs-preview` executable on a directory available
+on your `$PATH`.
+
+If you think you'll reach GitHub's [Rate Limit](http://developer.github.com/v3/#rate-limiting)
+of 60 requests per hour while working on your docs, please set the `ACCESS_TOKEN`
+environmetal variable to your [GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use).
 
 ### Getting Started
 
-Just make a `docs` directory in your Github project repository and put an `index.md` file in there to get started. Then browse to:
+If you are new to Viewdocs, just make a `docs` directory in your GitHub project
+repository and put an `index.md` file in there to get started.
 
-	http://<github-username>.viewdocs.io/<repository-name>
+Then run `viewdocs-preview` from the project's root and browse to:
 
-Any other Markdown files in your `docs` directory are available as a subpath, including files in directories. You can update pages by just pushing to your repository or editing directly on Github. It can take up to 1-2 minutes before changes will appear.
+	http://localhost:8888/project-name
 
-This page is an example of what documentation will look like by default. Here is [another example page](/viewdocs/example). The source for these pages are in the [docs directory](https://github.com/progrium/viewdocs/tree/master/docs) of the Viewdocs project.
+Any other Markdown files in your `docs` directory are available as a subpath,
+including files in directories. You can update pages and hit F5 to see the
+changes as you go instead of pushing the code back to the GitHub repository
+and waiting for Viewdocs cache to expire.
 
-### Advanced Usage
+This page is an example of what documentation will look like by default.
+Here is [another example page](/viewdocs-preview/example). The source for
+these pages are in the [docs directory](https://github.com/fgrehm/viewdocs-preview/tree/master/docs)
+of the viewdocs-preview project.
 
-You can show documentation for different [branches](http://inconshreveable.viewdocs.io/ngrok~master/DEVELOPMENT) or [tags](http://discourse.viewdocs.io/discourse~v0.9.6/INSTALL-ubuntu) of a repository by including a reference name after a tilde in the repository part of the path. It would look like this:
+### Custom layouts
 
-	http://<github-username>.viewdocs.io/<repository-name>~<refname>
+Viewdocs supports custom layouts for your docs. You can make your own `docs/template.html`
+based on the [default viewdocs template](https://github.com/progrium/viewdocs/blob/master/docs/template.html)
+and your pages will be rendered with that template.
 
-You can also customize the look and layout of your docs. Make your own `docs/template.html` based on the [default template](https://github.com/progrium/viewdocs/blob/master/docs/template.html) and your pages will be rendered with that template. 
+### More information
 
-I also highly recommend you [read the source](https://github.com/progrium/viewdocs/blob/master/viewdocs.go) to this app. It's less than 200 lines of Go. If you want to hack on Viewdocs, [check this out](/viewdocs/development).
+I highly recommend you [read the source](https://github.com/fgrehm/viewdocs-preview/blob/master/viewdocs.go)
+of this app. It's less than 150 lines of Go. If you want to hack on viewdocs-preview, [check this out](/viewdocs-preview/development).
 
 <br />
 Enjoy!<br />
-[Jeff Lindsay](http://twitter.com/progrium)
+[Fábio Rehm](http://twitter.com/fgrehm)
