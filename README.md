@@ -7,12 +7,15 @@ back to your repositories.
 
 ## Installation
 
+Right now it is only possible to install the `viewdocs-preview` command from
+sources. I'll provide precompiled releases of it as soon as things are stable.
+
+Assuming you have your [`$GOPATH`](http://golang.org/doc/code.html#GOPATH)
+configured properly, run:
+
 ```
-mkdir -p $GOPATH/src/github.com/fgrehm
-cd $GOPATH/src/github.com/fgrehm
-git clone https://github.com/fgrehm/viewdocs-preview.git
-cd viewdocs-preview
-go get
+go get github.com/fgrehm/viewdocs-preview
+cd $GOPATH/src/github.com/fgrehm/viewdocs-preview
 go build
 ```
 
