@@ -6,24 +6,9 @@ import (
 	"net/http"
 	"os"
 	"strings"
-	"time"
-
-	"code.google.com/p/vitess/go/cache"
 )
 
-const CacheCapacity = 256 * 1024 * 1024 // 256MB
-const CacheTTL = 60                     // raw.github.com cache TTL is ~120
-
 var DefaultTemplate string
-
-type CacheValue struct {
-	Value     string
-	CreatedAt int64
-}
-
-func (cv *CacheValue) Size() int {
-	return len(cv.Value)
-}
 
 func parseRequest(r *http.Request) (doc string, err error) {
 	path := strings.Split(r.RequestURI, "/")
@@ -80,8 +65,6 @@ func main() {
 		port = "8888"
 	}
 
-	lru := cache.NewLRUCache(CacheCapacity)
-
 	resp, err := http.Get("https://raw.github.com/progrium/viewdocs/master/docs/template.html")
 	if err != nil || resp.StatusCode == 404 {
 		log.Fatal("Unable to fetch default template")
@@ -106,23 +89,11 @@ func main() {
 				return
 			}
 			log.Printf("Building docs for '%s'", doc)
-			key := doc
-			value, ok := lru.Get(key)
-			var output string
-			if !ok {
-				output, err = fetchAndRenderDoc(doc)
-				if err != nil {
-					w.WriteHeader(http.StatusInternalServerError)
-					w.Write([]byte(err.Error()))
-					return
-				}
-				lru.Set(key, &CacheValue{output, time.Now().Unix()})
-				log.Println("CACHE MISS:", key, lru.StatsJSON())
-			} else {
-				output = value.(*CacheValue).Value
-				if time.Now().Unix()-value.(*CacheValue).CreatedAt > CacheTTL {
-					lru.Delete(key)
-				}
+			output, err := fetchAndRenderDoc(doc)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				w.Write([]byte(err.Error()))
+				return
 			}
 			w.Write([]byte(output))
 		default:
