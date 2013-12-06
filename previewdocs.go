@@ -1,13 +1,17 @@
 package main
 
 import (
+	"bytes"
 	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
 	"os/exec"
+	"path"
 	"regexp"
 	"strings"
+
+	"code.google.com/p/go.net/html"
 )
 
 var DefaultTemplate string
@@ -17,7 +21,7 @@ func parseRequest(r *http.Request) (repo, doc string) {
 	repo = path[1]
 
 	if len(path) < 3 || (len(path) == 3 && strings.HasSuffix(r.RequestURI, "/")) {
-		doc = "index"
+		doc = "index.md"
 	} else {
 		doc = strings.Join(path[2:], "/")
 		if strings.HasSuffix(doc, "/") {
@@ -25,6 +29,41 @@ func parseRequest(r *http.Request) (repo, doc string) {
 		}
 	}
 	return
+}
+
+func fixRelativeLinks(doc string, repo string, body string) (string, error) {
+	n, err := html.Parse(strings.NewReader(string(body)))
+	if err != nil {
+		return "", err
+	}
+	var f func(*html.Node)
+	f = func(n *html.Node) {
+		if n.Type == html.ElementNode && n.Data == "a" {
+			for i, a := range n.Attr {
+				if a.Key == "href" {
+					fs := strings.Index(a.Val, "/")
+					fc := strings.Index(a.Val, ":")
+					fh := strings.Index(a.Val, "#")
+					if fs == 0 || fh == 0 ||
+					(fc >= 0 && fc < fs) ||
+					(fh >= 0 && fh < fs) {
+						continue
+					}
+					dir := path.Dir(doc)
+					n.Attr[i].Val = "/" + repo + "/" + dir + "/" + a.Val
+				}
+			}
+		}
+		for c := n.FirstChild; c != nil; c = c.NextSibling {
+			f(c)
+		}
+	}
+	f(n)
+	b := new(bytes.Buffer)
+	if err := html.Render(b, n); err != nil {
+		return "", err
+	}
+	return b.String(), nil
 }
 
 func fetchAndRenderDoc(user, repo, doc string) (string, error) {
@@ -37,7 +76,21 @@ func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 		}
 		template <- string(buf)
 	}()
-	buf, err := ioutil.ReadFile("docs/" + doc + ".md")
+
+	// https://github.com/github/markup/blob/master/lib/github/markups.rb#L1
+	mdExts := map[string]bool{
+		".md":        true,
+		".mkdn":      true,
+		".mdwn":      true,
+		".mdown":     true,
+		".markdown":  true,
+		".litcoffee": true,
+	}
+	if ok, _ := mdExts[path.Ext(doc)]; !ok {
+		doc += ".md"
+	}
+
+	buf, err := ioutil.ReadFile("docs/" + doc)
 	if err != nil {
 		return "# Page not found", err
 	}
@@ -56,7 +109,14 @@ func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	output := strings.Replace(<-template, "{{CONTENT}}", string(body), 1)
+
+	// Fix relative links
+	bodyStr, err = fixRelativeLinks(doc, repo, string(body))
+	if err != nil {
+		return "", err
+	}
+
+	output := strings.Replace(<-template, "{{CONTENT}}", bodyStr, 1)
 	if user != "" {
 		output = strings.Replace(output, "{{NAME}}", repo, -1)
 	}
