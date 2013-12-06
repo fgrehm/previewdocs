@@ -43,7 +43,7 @@ changes as you go instead of pushing the code back to the GitHub repository
 and waiting for Viewdocs cache to expire.
 
 This page is an example of what documentation will look like by default.
-Here is [another example page](/previewdocs/example). The source for
+Here is [another example page](example). The source for
 these pages are in the [docs directory](https://github.com/fgrehm/previewdocs/tree/master/docs)
 of the viewdocs-preview project.
 
@@ -56,7 +56,7 @@ and your pages will be rendered with that template.
 ### More information
 
 I highly recommend you [read the source](https://github.com/fgrehm/previewdocs/blob/master/viewdocs.go)
-of this app. It's less than 150 lines of Go. If you want to hack on `previewdocs`, [check this out](/previewdocs/development).
+of this app. It's less than 150 lines of Go. If you want to hack on `previewdocs`, [check this out](development.md).
 
 <br />
 Enjoy!<br />
