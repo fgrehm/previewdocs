@@ -12,6 +12,7 @@ After that, just sing that same old song:
 ```sh
 go get github.com/fgrehm/previewdocs
 cd $GOPATH/src/github.com/fgrehm/previewdocs
+go get
 go run previewdocs.go
 ```
 
