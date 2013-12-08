@@ -7,8 +7,6 @@ import (
 	"os"
 )
 
-var DefaultTemplate string
-
 func main() {
 	if os.Getenv("ACCESS_TOKEN") == "" {
 		log.Println("WARNING: ACCESS_TOKEN was not found, you'll be subject to GitHub's Rate Limiting of 60 requests per hour. " +
@@ -29,7 +27,7 @@ func main() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	DefaultTemplate = string(body)
+	var defaultTemplate = string(body)
 
 	user, gitHubRepo := grabUserAndRepo()
 
@@ -50,7 +48,7 @@ func main() {
 				return
 			}
 			log.Printf("Building docs for '%s'", doc)
-			output, err := fetchAndRenderDoc(user, gitHubRepo, doc)
+			output, err := fetchAndRenderDoc(user, gitHubRepo, doc, defaultTemplate)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				w.Write([]byte(err.Error()))

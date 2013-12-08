@@ -8,12 +8,12 @@ import (
 	"strings"
 )
 
-func fetchAndRenderDoc(user, repo, doc string) (string, error) {
+func fetchAndRenderDoc(user, repo, doc string, defaultTemplate string) (string, error) {
 	template := make(chan string)
 	go func() {
 		buf, err := ioutil.ReadFile("docs/template.html")
 		if err != nil {
-			template <- DefaultTemplate
+			template <- defaultTemplate
 			return
 		}
 		template <- string(buf)
