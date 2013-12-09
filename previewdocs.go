@@ -49,8 +49,7 @@ func fixRelativeLinks(doc, repo, body string) (string, error) {
 					(fh >= 0 && fh < fs) {
 						continue
 					}
-					dir := path.Dir(doc)
-					n.Attr[i].Val = "/" + repo + "/" + dir + "/" + a.Val
+					n.Attr[i].Val = "/" + repo + "/" + a.Val
 				}
 			}
 		}
