@@ -117,12 +117,8 @@ func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 	}
 
 	output := strings.Replace(<-template, "{{CONTENT}}", bodyStr, 1)
-	if user != "" {
-		output = strings.Replace(output, "{{NAME}}", repo, -1)
-	}
-	if repo != "" {
-		output = strings.Replace(output, "{{USER}}", user, -1)
-	}
+	output = strings.Replace(output, "{{NAME}}", repo, -1)
+	output = strings.Replace(output, "{{USER}}", user, -1)
 	return output, nil
 }
 
