@@ -31,7 +31,7 @@ func parseRequest(r *http.Request) (repo, doc string) {
 	return
 }
 
-func fixRelativeLinks(doc string, repo string, body string) (string, error) {
+func fixRelativeLinks(doc, repo, body string) (string, error) {
 	n, err := html.Parse(strings.NewReader(string(body)))
 	if err != nil {
 		return "", err
@@ -110,15 +110,16 @@ func fetchAndRenderDoc(user, repo, doc string) (string, error) {
 		return "", err
 	}
 
+	output := strings.Replace(<-template, "{{CONTENT}}", string(body), 1)
+	output = strings.Replace(output, "{{NAME}}", repo, -1)
+	output = strings.Replace(output, "{{USER}}", user, -1)
+
 	// Fix relative links
-	bodyStr, err = fixRelativeLinks(doc, repo, string(body))
+	output, err = fixRelativeLinks(doc, repo, output)
 	if err != nil {
 		return "", err
 	}
 
-	output := strings.Replace(<-template, "{{CONTENT}}", bodyStr, 1)
-	output = strings.Replace(output, "{{NAME}}", repo, -1)
-	output = strings.Replace(output, "{{USER}}", user, -1)
 	return output, nil
 }
 
