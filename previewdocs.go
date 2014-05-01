@@ -143,9 +143,16 @@ func grabUserAndRepo() (user, repo string) {
 }
 
 func main() {
+	buf, err := ioutil.ReadFile(os.Getenv("HOME") + "/.previewdocsrc")
+	if err == nil {
+		os.Setenv("ACCESS_TOKEN", strings.Trim(string(buf), "\n"))
+	}
+
 	if os.Getenv("ACCESS_TOKEN") == "" {
 		log.Println("WARNING: ACCESS_TOKEN was not found, you'll be subject to GitHub's Rate Limiting of 60 requests per hour. " +
 			"Please read http://developer.github.com/v3/#rate-limiting for more information")
+	} else {
+		log.Printf("Using '%s'\n", os.Getenv("ACCESS_TOKEN"))
 	}
 
 	port := os.Getenv("PORT")
@@ -190,6 +197,7 @@ func main() {
 				return
 			}
 			w.Write([]byte(output))
+			log.Printf("Docs for '%s' finished building", doc)
 		default:
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
