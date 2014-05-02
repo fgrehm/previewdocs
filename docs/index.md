@@ -9,24 +9,13 @@ changes to your documentation before pushing the code back to your repository.
 
 ### Installation
 
-Right now it is only possible to install the `previewdocs` command from
-sources. I'll provide precompiled releases of it as soon as things are stable.
-
-Assuming you have your [`$GOPATH`](http://golang.org/doc/code.html#GOPATH)
-configured properly, run:
-
-```
-go get github.com/fgrehm/previewdocs
-cd $GOPATH/src/github.com/fgrehm/previewdocs
-go build
-```
-
-Then drop the generated `previewdocs` executable on a directory available
-on your `$PATH`.
+Download the latest released version for your platform from [GitHub](https://github.com/jingweno/gh/releases/latest),
+place it somewhere on your `PATH` and make it executable.
 
 If you think you'll reach GitHub's [Rate Limit](http://developer.github.com/v3/#rate-limiting)
-of 60 requests per hour while working on your docs, please set the `ACCESS_TOKEN`
-environmetal variable to your [GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use).
+of 60 requests per hour while working on your docs, please create a [GitHub access token](https://help.github.com/articles/creating-an-access-token-for-command-line-use)
+and place the token on `$HOME/.previewdocsrc` or set it as the the `ACCESS_TOKEN`
+environmetal variable.
 
 ### Getting Started
 
@@ -45,7 +34,7 @@ and waiting for Viewdocs cache to expire.
 This page is an example of what documentation will look like by default.
 Here is [another example page](example). The source for
 these pages are in the [docs directory](https://github.com/fgrehm/previewdocs/tree/master/docs)
-of the viewdocs-preview project.
+of the project.
 
 ### Custom layouts
 
@@ -56,7 +45,8 @@ and your pages will be rendered with that template.
 ### More information
 
 I highly recommend you [read the source](https://github.com/fgrehm/previewdocs/blob/master/viewdocs.go)
-of this app. It's less than 150 lines of Go. If you want to hack on `previewdocs`, [check this out](development.md).
+of this app. It's less than 200 lines of Go. If you want to hack on `previewdocs`,
+[check this out](development.md).
 
 <br />
 Enjoy!<br />
