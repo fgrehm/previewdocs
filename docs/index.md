@@ -9,7 +9,7 @@ changes to your documentation before pushing the code back to your repository.
 
 ### Installation
 
-Download the latest released version for your platform from [GitHub](https://github.com/jingweno/gh/releases/latest),
+Download the latest released version for your platform from [GitHub](https://github.com/fgrehm/previewdocs/releases/latest),
 place it somewhere on your `PATH` and make it executable.
 
 If you think you'll reach GitHub's [Rate Limit](http://developer.github.com/v3/#rate-limiting)
