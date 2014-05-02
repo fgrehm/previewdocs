@@ -44,7 +44,7 @@ and your pages will be rendered with that template.
 
 ### More information
 
-I highly recommend you [read the source](https://github.com/fgrehm/previewdocs/blob/master/viewdocs.go)
+I highly recommend you [read the source](https://github.com/fgrehm/previewdocs/blob/master/previewdocs.go)
 of this app. It's less than 200 lines of Go. If you want to hack on `previewdocs`,
 [check this out](development.md).
 
